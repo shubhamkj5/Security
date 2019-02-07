@@ -4,26 +4,19 @@ import java.util.Scanner;
 public class Q1MDFile {
    public static void main(String args[]) throws Exception{
      
-      Scanner sc = new Scanner(System.in);
-      System.out.println("Enter the message");
-      String message = sc.nextLine();
-	  
-     
-      MessageDigest md = MessageDigest.getInstance("SHA-256");
+    String password = "12345";
+ MessageDigest algorithm = null;
+ try {
+ algorithm = MessageDigest.getInstance("MD5");
+ } catch (NoSuchAlgorithmException e) {
+ e.printStackTrace();
+ }
+ algorithm.reset();
+ algorithm.update(password.getBytes());
+ byte[] messageDigest = algorithm.digest();
+	   System.out.println("length " + messageDigest.length);
 
-      
-      md.update(message.getBytes());
-      
-     
-      byte[] digest = md.digest();      
-      System.out.println(digest);  
-     
-      
-      StringBuffer hexString = new StringBuffer();
-      
-      for (int i = 0;i<digest.length;i++) {
-         hexString.append(Integer.toHexString(0xFF & digest[i]));
-      }
-      System.out.println("Hex format : " + hexString.toString());     
+ String encodedDigest = Base64.getEncoder().encodeToString(messageDigest);;
+ System.out.println("Base64 encoded message digest " + encodedDigest);
    }
 }
