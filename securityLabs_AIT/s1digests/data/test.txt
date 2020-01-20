@@ -1,0 +1,6 @@
+The MD5 Message-Digest Algorithm is a widely used cryptographic hash function that produces 
+a 128-bit (16-byte) hash value. Specified in RFC 1321, MD5 has been employed in a wide variety 
+of security applications, and is also commonly used to check data integrity. 
+However, it has been shown that MD5 is not collision resistant;[3] as such, MD5 is not suitable 
+for applications like SSL certificates or digital signatures that rely on this property. 
+An MD5 hash is typically expressed as a 32-digit hexadecimal number.

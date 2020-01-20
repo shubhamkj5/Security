@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?><?dbhtml 
+			graphics-dir="../dbhtml/graphics/" 
+			css-stylesheet-dir="../dbhtml/browser/"
+			script-dir="../dbhtml/browser/"
+		?>
+<slides>
+   <slidesinfo>
+      <title/>
+   </slidesinfo>
+   <foil>
+      <title>../src/A3MessageDigest.java</title>
+      <programlisting>import java.security.MessageDigest;&#xD;
+import java.security.NoSuchAlgorithmException;&#xD;
+&#xD;
+public class A3MessageDigest {&#xD;
+  public static void main(String[] args) {&#xD;
+&#xD;
+    String password = "12345";&#xD;
+    // also try long string. change 1 char in string and see how much the&#xD;
+    // message digest changes.&#xD;
+    MessageDigest algorithm = null;&#xD;
+    try {&#xD;
+      algorithm = MessageDigest.getInstance("MD5");&#xD;
+    } catch (NoSuchAlgorithmException e) {&#xD;
+      e.printStackTrace();&#xD;
+    }&#xD;
+&#xD;
+    algorithm.reset();&#xD;
+    algorithm.update(password.getBytes());&#xD;
+    byte[] messageDigest = algorithm.digest();&#xD;
+    &#xD;
+    System.out.println("length " + messageDigest.length);&#xD;
+    &#xD;
+&#xD;
+    // Now to print out a hex representation of the digest.&#xD;
+    StringBuffer hexString = new StringBuffer();&#xD;
+    for (int i = 0; i &lt; messageDigest.length; i++) {&#xD;
+      hexString.append(Integer.toHexString(255 &amp; messageDigest[i]));&#xD;
+      hexString.append(".");&#xD;
+    }&#xD;
+&#xD;
+    System.out.println("password " + password);&#xD;
+    System.out.println(" md5 version is " + hexString.toString());&#xD;
+&#xD;
+  }&#xD;
+}</programlisting>
+   </foil>
+   <foil>
+      <title>../src/A3MessageDigest2.java</title>
+      <programlisting>import java.math.BigInteger;&#xD;
+import java.security.MessageDigest;&#xD;
+import java.security.NoSuchAlgorithmException;&#xD;
+&#xD;
+public class A3MessageDigest2 {&#xD;
+  public static void main(String[] args) {&#xD;
+&#xD;
+    String password = "12345";&#xD;
+&#xD;
+    MessageDigest algorithm = null;&#xD;
+    try {&#xD;
+      algorithm = MessageDigest.getInstance("MD5");&#xD;
+    } catch (NoSuchAlgorithmException e) {&#xD;
+      e.printStackTrace();&#xD;
+    }&#xD;
+    final byte[] md5Digest = algorithm.digest(password.getBytes());&#xD;
+    System.out.println(md5Digest.length);&#xD;
+&#xD;
+    final BigInteger md5Number = new BigInteger(1, md5Digest);&#xD;
+    final String md5 = md5Number.toString(16);&#xD;
+    System.out.println("password " + password);&#xD;
+    System.out.println(" md5 version is " + md5);&#xD;
+&#xD;
+  }&#xD;
+}</programlisting>
+   </foil>
+   <foil>
+      <title>../src/A4MessageDigestFile.java</title>
+      <programlisting>import java.io.File;&#xD;
+import java.io.FileInputStream;&#xD;
+import java.io.InputStream;&#xD;
+import java.math.BigInteger;&#xD;
+import java.security.MessageDigest;&#xD;
+&#xD;
+public class A4MessageDigestFile {&#xD;
+  public static void main(String[] args) {&#xD;
+    try {&#xD;
+      MessageDigest algorithm = MessageDigest.getInstance("SHA-256");&#xD;
+      File f = new File("data/test.txt");&#xD;
+      InputStream is = new FileInputStream(f);&#xD;
+      byte[] buffer = new byte[8192];&#xD;
+      &#xD;
+      int read = 0;&#xD;
+      while ((read = is.read(buffer)) &gt; 0) {&#xD;
+        algorithm.update(buffer, 0, read);&#xD;
+      }&#xD;
+      &#xD;
+      byte[] md5Digest = algorithm.digest();&#xD;
+      BigInteger bigInt = new BigInteger(1, md5Digest);&#xD;
+      String output = bigInt.toString(16);&#xD;
+      &#xD;
+      System.out.println("SHA-256: " + output);&#xD;
+&#xD;
+    } catch (Exception e) {&#xD;
+      e.printStackTrace();&#xD;
+    }&#xD;
+&#xD;
+  }&#xD;
+}</programlisting>
+   </foil>
+   <foil>
+      <title>../src/A5MessageDigestUsingHexUtil.java</title>
+      <programlisting>import java.security.MessageDigest;&#xD;
+import java.security.NoSuchAlgorithmException;&#xD;
+import java.security.Provider;&#xD;
+import java.security.Security;&#xD;
+&#xD;
+public class A5MessageDigestUsingHexUtil {&#xD;
+  public static void main(String[] args) {&#xD;
+&#xD;
+    String password = "12345";&#xD;
+    MessageDigest algorithm = null;&#xD;
+   &#xD;
+    // MD5, SHA1, SHA-256, SHA-384, and SHA-512&#xD;
+    &#xD;
+    try {&#xD;
+      algorithm = MessageDigest.getInstance("SHA-512");&#xD;
+    } catch (NoSuchAlgorithmException e) {&#xD;
+      e.printStackTrace();&#xD;
+    }&#xD;
+    &#xD;
+    byte[] digest = algorithm.digest(password.getBytes());&#xD;
+&#xD;
+  &#xD;
+    System.out.println("password " + password);&#xD;
+    System.out.println("digest is " + HexUtil.toString(digest));&#xD;
+    System.out.println("digest length " + HexUtil.bitLength(digest));&#xD;
+&#xD;
+  }&#xD;
+}</programlisting>
+   </foil>
+   <foil>
+      <title>../src/A6MessageDigestCommonsCodec.java</title>
+      <programlisting>import org.apache.commons.codec.digest.DigestUtils;&#xD;
+&#xD;
+public class A6MessageDigestCommonsCodec {&#xD;
+&#xD;
+  public static void main(String[] args) {&#xD;
+&#xD;
+    String password = "12345";&#xD;
+    String md5 = DigestUtils.md5Hex(password);&#xD;
+&#xD;
+    System.out.println("password " + password);&#xD;
+    System.out.println("md5 digest is " + md5);&#xD;
+&#xD;
+    String sha256 = DigestUtils.sha256Hex(password);&#xD;
+&#xD;
+    System.out.println("password " + password);&#xD;
+    System.out.println("sha256 digest is " + sha256);&#xD;
+  }&#xD;
+}</programlisting>
+   </foil>
+   <foil>
+      <title>../src/A7MDCommonsCodecFile.java</title>
+      <programlisting>import java.io.File;&#xD;
+import java.io.FileInputStream;&#xD;
+import java.io.InputStream;&#xD;
+&#xD;
+import org.apache.commons.codec.digest.DigestUtils;&#xD;
+&#xD;
+public class A7MDCommonsCodecFile {&#xD;
+&#xD;
+  public static void main(String[] args) throws Exception {&#xD;
+    File f = new File("data/test.txt");&#xD;
+    InputStream is = new FileInputStream(f);&#xD;
+    String sha256 = DigestUtils.sha256Hex(is);&#xD;
+    System.out.println("SHA-256: " + sha256);&#xD;
+  }&#xD;
+}</programlisting>
+   </foil>
+   <foil>
+      <title>../src/HexUtil.java</title>
+      <programlisting>import java.math.BigInteger;&#xD;
+&#xD;
+&#xD;
+public class HexUtil {&#xD;
+  public static String toString(byte[] bytes) {&#xD;
+    final BigInteger digestNumber = new BigInteger(1, bytes);&#xD;
+    return digestNumber.toString(16);&#xD;
+  }&#xD;
+  &#xD;
+  public static int bitLength(byte[] bytes) {&#xD;
+    return bytes.length * 8 ;&#xD;
+  }&#xD;
+&#xD;
+}</programlisting>
+   </foil>
+</slides>
