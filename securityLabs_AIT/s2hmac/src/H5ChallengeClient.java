@@ -36,7 +36,7 @@ public class H5ChallengeClient {
       Scanner r = new Scanner(in);
 
       // Send a name
-      p.println("paul");
+      p.println("jain");
       p.flush();
 
       // read challenge from server
