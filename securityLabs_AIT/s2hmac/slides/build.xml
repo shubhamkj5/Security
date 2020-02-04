@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<project name="multiFormats" default="usage">
+
+	<description>
+		Generating Slides Hopefully
+    </description>
+
+	<!-- files2slides -->
+	<property name="f2s.dir" value="../../../../a0f2s" />
+	<property name="lib.dir" value="${f2s.dir}/lib" />
+	<property name="saxon.lib.dir" value="${lib.dir}/saxon6.5.5" />
+	<property name="xsl.dir" value="${f2s.dir}" />
+	
+	<!-- my files -->
+	<property name="input.file" value="files.xml" />
+	<property name="slides.file" value="slides.xml" />
+
+	<!-- directories -->
+	<property name="src.dir" value="." />
+	<property name="gen.dir" value="generated" />
+
+
+	<!-- external stylesheets -->
+	<property name="docBook-slides.dir" value="${f2s.dir}/docbook-slides-3.2.0" />
+	<property name="slides.stylesheet" value="${docBook-slides.dir}/xsl/xhtml/w3c.xsl" />
+
+	<!-- my stylesheets -->
+	<property name="files2slides.stylesheet" value="${xsl.dir}/files2Slides.xsl" />
+
+	<path id="saxon.classpath">
+		<fileset dir="${saxon.lib.dir}" id="saxon.fileset">
+			<include name="saxon.jar" />
+		</fileset>
+	</path>
+
+	<path id="all.classpath">
+		<path refid="saxon.classpath" />
+		<pathelement location="${lib.dir}" />
+	</path>
+
+	<target name="usage" description="Prints the Ant build.xml usage">
+		<echo message="Use -projecthelp to get a list of the available targets." />
+	</target>
+
+
+	<target name="clean" description="Cleans up generated files.">
+		<delete dir="${gen.dir}" />
+	</target>
+
+	<target name="depends">
+		<mkdir dir="${gen.dir}" />
+	</target>
+
+	<target name="build-slides" description="Generate slides">
+		<xslt style="${files2slides.stylesheet}" in="${src.dir}/${input.file}" out="${gen.dir}/${slides.file}">
+			<classpath refid="all.classpath" />
+		</xslt>
+	</target>
+
+	<target name="build-slides-html" depends="build-slides" description="Generate html from slides">
+		<java classname="com.icl.saxon.StyleSheet">
+			<arg value="${gen.dir}/${slides.file}" />
+			<arg value="${slides.stylesheet}" />
+			<classpath refid="saxon.classpath" />
+		</java>
+		<move todir="${gen.dir}">
+		    <fileset dir=".">
+		      <include name="*.html"/>
+		    </fileset>
+		  </move>
+	</target>
+	
+</project>

@@ -1,0 +1,31 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>../src/H1hmacEx.java</title><link type="text/css" rel="stylesheet" href="../dbhtml/browser/slides-w3c.css"></link><link rel="contents" href="toc.html" title=""></link><link rel="top" href="index.html" title=""></link><link rel="first" href="index.html" title=""></link><link rel="up" href="index.html" title=""></link><link rel="previous" href="foil01.html" title="../src/H0readWriteObject.java"></link><link rel="next" href="foil03.html" title="../src/H1hmacExBase64Encode.java"></link><link rel="last" href="foil08.html" title="../src/HexUtil.java"></link><script language="JavaScript1.2" type="text/javascript"> </script><script type="text/javascript" language="javascript" src="../dbhtml/browser/ua.js"> </script><script type="text/javascript" language="JavaScript" src="../dbhtml/browser/xbDOM.js"> </script><script type="text/javascript" language="javascript" src="../dbhtml/browser/xbStyle.js"> </script><script type="text/javascript" language="javascript" src="../dbhtml/browser/xbCollapsibleLists.js"> </script><script type="text/javascript" language="JavaScript" src="../dbhtml/browser/slides.js"> </script></head><body class="foil" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF" onkeypress="navigate(event)"><div class="foil"><a id="d0e12"></a><div class="navhead"><table class="navbar" cellspacing="0" cellpadding="0" border="0" width="97%" summary="Navigation buttons"><tr><td align="left" valign="top"></td><td valign="top" nowrap="nowrap" width="150"><div align="right"><a rel="previous" accesskey="P" href="foil01.html"><img border="0" width="32" height="32" alt=" Previous" title="../src/H0readWriteObject.java" src="../dbhtml/graphics/active/w3c-prev.png"></img></a><a rel="contents" href="toc.html" accesskey="C"><img border="0" width="32" height="32" alt=" Contents" title="Table of Contents" src="../dbhtml/graphics/active/w3c-toc.png"></img></a><a rel="next" accesskey="N" href="foil03.html"><img border="0" width="32" height="32" alt=" Next" title="../src/H1hmacExBase64Encode.java" src="../dbhtml/graphics/active/w3c-next.png"></img></a></div></td></tr></table><h1 class="title">../src/H1hmacEx.java</h1><hr class="top-nav-sep"></hr></div><div class="foil-body"><pre xmlns="" class="programlisting">import java.util.Arrays;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+
+public class H1hmacEx {
+  public static void main(String[] args) throws Exception {
+    // Generate secret key for HMAC-MD5
+    KeyGenerator kg = KeyGenerator.getInstance("HmacSHA256");
+    SecretKey sk = kg.generateKey();
+
+    // Get instance of Mac object implementing HMAC-MD5, and
+    // initialize it with the above secret key
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(sk);
+    byte[] hmacSignature = mac.doFinal("Hi There".getBytes());
+    System.out.println(hmacSignature.length);
+    
+    /// Receiver
+    Mac mac2 = Mac.getInstance("HmacSHA256");
+    mac2.init(sk);
+    byte[] hmacSignature2 = mac.doFinal("Hi There".getBytes());
+    
+    System.out.println("Check: " + Arrays.equals(hmacSignature, hmacSignature2));
+       
+  }
+}</pre></div><div id="overlayDiv"><div class="navfoot"><hr class="bottom-nav-sep"></hr><table class="footer" cellspacing="0" cellpadding="0" border="0" width="97%" summary="footer"><tr><td align="left" valign="top"></td><td align="right" valign="top"><span class="index">2 of 8</span></td><td valign="top" nowrap="nowrap" width="150"><div align="right"><a rel="previous" accesskey="P" href="foil01.html"><img border="0" width="32" height="32" alt=" Previous" title="../src/H0readWriteObject.java" src="../dbhtml/graphics/active/w3c-prev.png"></img></a><a rel="next" accesskey="N" href="foil03.html"><img border="0" width="32" height="32" alt=" Next" title="../src/H1hmacExBase64Encode.java" src="../dbhtml/graphics/active/w3c-next.png"></img></a></div></td></tr></table></div></div></div></body></html>

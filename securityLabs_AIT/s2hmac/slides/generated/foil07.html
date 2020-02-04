@@ -1,0 +1,59 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>../src/H5ChallengeClient.java</title><link type="text/css" rel="stylesheet" href="../dbhtml/browser/slides-w3c.css"></link><link rel="contents" href="toc.html" title=""></link><link rel="top" href="index.html" title=""></link><link rel="first" href="index.html" title=""></link><link rel="up" href="index.html" title=""></link><link rel="previous" href="foil06.html" title="../src/H4ChallengeServer.java"></link><link rel="next" href="foil08.html" title="../src/HexUtil.java"></link><script language="JavaScript1.2" type="text/javascript"> </script><script type="text/javascript" language="javascript" src="../dbhtml/browser/ua.js"> </script><script type="text/javascript" language="JavaScript" src="../dbhtml/browser/xbDOM.js"> </script><script type="text/javascript" language="javascript" src="../dbhtml/browser/xbStyle.js"> </script><script type="text/javascript" language="javascript" src="../dbhtml/browser/xbCollapsibleLists.js"> </script><script type="text/javascript" language="JavaScript" src="../dbhtml/browser/slides.js"> </script></head><body class="foil" bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF" onkeypress="navigate(event)"><div class="foil"><a id="d0e37"></a><div class="navhead"><table class="navbar" cellspacing="0" cellpadding="0" border="0" width="97%" summary="Navigation buttons"><tr><td align="left" valign="top"></td><td valign="top" nowrap="nowrap" width="150"><div align="right"><a rel="previous" accesskey="P" href="foil06.html"><img border="0" width="32" height="32" alt=" Previous" title="../src/H4ChallengeServer.java" src="../dbhtml/graphics/active/w3c-prev.png"></img></a><a rel="contents" href="toc.html" accesskey="C"><img border="0" width="32" height="32" alt=" Contents" title="Table of Contents" src="../dbhtml/graphics/active/w3c-toc.png"></img></a><a rel="next" accesskey="N" href="foil08.html"><img border="0" width="32" height="32" alt=" Next" title="../src/HexUtil.java" src="../dbhtml/graphics/active/w3c-next.png"></img></a></div></td></tr></table><h1 class="title">../src/H5ChallengeClient.java</h1><hr class="top-nav-sep"></hr></div><div class="foil-body"><pre xmlns="" class="programlisting">import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.Arrays;
+import java.util.Scanner;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+
+public class H5ChallengeClient {
+  
+  static Object readFromFile(String filename) throws Exception {
+    FileInputStream fin = new FileInputStream(filename);
+    ObjectInputStream oin = new ObjectInputStream(fin);
+    Object object = oin.readObject();
+    oin.close() ;
+    return object;
+  }
+  
+  public static void main(String[] args) throws Exception {
+    
+    // read secret key
+    SecretKey sk = (SecretKey) readFromFile("data/secretKey") ;
+    
+    InetAddress inet = InetAddress.getByName("localhost");
+    Socket s = new Socket(inet, 2000);
+
+    OutputStream o = s.getOutputStream();
+    PrintWriter p = new PrintWriter(o);
+    InputStream in = s.getInputStream();
+    Scanner r = new Scanner(in);
+
+    p.println("paul");
+    p.flush();
+
+    // read challenge from server
+    String challenge = r.nextLine();
+    System.out.println("Client: Challenge is " + challenge);
+    
+    // send response
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(sk);
+    byte[] result = mac.doFinal(challenge.getBytes());    
+    o.write(result) ;
+    
+    // have we passed
+    String reply = r.nextLine();
+    System.out.println("Client: Reply is " + reply);     
+  }
+}</pre></div><div id="overlayDiv"><div class="navfoot"><hr class="bottom-nav-sep"></hr><table class="footer" cellspacing="0" cellpadding="0" border="0" width="97%" summary="footer"><tr><td align="left" valign="top"></td><td align="right" valign="top"><span class="index">7 of 8</span></td><td valign="top" nowrap="nowrap" width="150"><div align="right"><a rel="previous" accesskey="P" href="foil06.html"><img border="0" width="32" height="32" alt=" Previous" title="../src/H4ChallengeServer.java" src="../dbhtml/graphics/active/w3c-prev.png"></img></a><a rel="next" accesskey="N" href="foil08.html"><img border="0" width="32" height="32" alt=" Next" title="../src/HexUtil.java" src="../dbhtml/graphics/active/w3c-next.png"></img></a></div></td></tr></table></div></div></div></body></html>
